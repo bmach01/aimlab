@@ -1,8 +1,17 @@
-#include <iostream>
+#include "game.h"
 
 int main() {
 
-	std::cout << "Hello World!!!\n";
+	Game game;
+
+
+	while (game.isRunning()) {
+
+		game.update();
+
+		game.draw();
+	}
+
 
 	return 0;
 }
