@@ -22,8 +22,3 @@ public:
 	void polling();
 	void draw();
 };
-
-/*
-TEST 2 
-falafel>mieso 
-*/
