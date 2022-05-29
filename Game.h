@@ -24,7 +24,6 @@ public:
 };
 
 /*
-TEST 
-podaje has³o 
-lubie w dupe 
+TEST 2 
+falafel>mieso 
 */
