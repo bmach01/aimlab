@@ -23,3 +23,8 @@ public:
 	void draw();
 };
 
+/*
+TEST 
+podaje has³o 
+lubie w dupe 
+*/
