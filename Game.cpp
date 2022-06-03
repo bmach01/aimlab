@@ -1,57 +1,45 @@
 #include "Game.h"
 
-void Game::drawMainMenu()
+
+void Game::initiateMainMenu()
 {
-	// Title text
-	sf::Text title;
-	title.setFont(mainFont);
-	title.setString("AimLab");
-	title.setCharacterSize(90);
-	title.setFillColor(sf::Color::White);
-	title.setOrigin(title.getGlobalBounds().width / 2, title.getGlobalBounds().height / 2);
-	title.setPosition(width / 2, height / 4);
-
-	// Menu buttons
-	sf::RectangleShape gameModeButton;
-	sf::RectangleShape settingsButton;
-	sf::RectangleShape exitButton;
-
-	// std::array for later copying to polling
-	std::array<sf::RectangleShape,3> allButtons = { gameModeButton, settingsButton, exitButton };
+	// Title 
+	mainMenuTexts[3].setFont(mainFont);
+	mainMenuTexts[3].setString("AimLab");
+	mainMenuTexts[3].setCharacterSize(90);
+	mainMenuTexts[3].setFillColor(sf::Color::White);
+	mainMenuTexts[3].setOrigin(mainMenuTexts[3].getGlobalBounds().width / 2, mainMenuTexts[3].getGlobalBounds().height / 2);
+	mainMenuTexts[3].setPosition(width / 2, height / 4);
 
 	// Menu buttons texts
-	sf::Text gameModeText;
-	gameModeText.setString("play");
-	sf::Text settingsText;
-	settingsText.setString("settings");
-	sf::Text exitText;
-	exitText.setString("exit");
-
-	sf::Text buttonTexts[3] = { gameModeText, settingsText, exitText };
+	mainMenuTexts[0].setString("play");
+	mainMenuTexts[1].setString("settings");
+	mainMenuTexts[2].setString("exit");
 
 	// Graphic customization
 	for (int i = 0; i < 3; i++) {
-		allButtons[i].setOutlineColor(sf::Color::White);
-		allButtons[i].setOutlineThickness(5.f);
-		allButtons[i].setFillColor(sf::Color::Black);
-		allButtons[i].setSize(sf::Vector2f(300.f, 80.f));
-		allButtons[i].setPosition(width / 2, (height + 200 * i) / 2);
-		allButtons[i].setOrigin(150.f, 40.f);
+		mainMenuButtons[i].setOutlineColor(sf::Color::White);
+		mainMenuButtons[i].setOutlineThickness(5.f);
+		mainMenuButtons[i].setFillColor(sf::Color::Black);
+		mainMenuButtons[i].setSize(sf::Vector2f(300.f, 80.f));
+		mainMenuButtons[i].setPosition(width / 2, (height + 200 * i) / 2);
+		mainMenuButtons[i].setOrigin(150.f, 40.f);
 
-		buttonTexts[i].setFont(mainFont);
-		buttonTexts[i].setFillColor(sf::Color::White);
-		buttonTexts[i].setCharacterSize(50);
-		buttonTexts[i].setOrigin(buttonTexts[i].getGlobalBounds().width / 2, buttonTexts[i].getGlobalBounds().height / 2);
-		buttonTexts[i].setPosition(allButtons[i].getPosition().x, allButtons[i].getPosition().y - 10); // To jest voodoo/Stala Mimora
-
-		window->draw(allButtons[i]);
-		window->draw(buttonTexts[i]);
+		mainMenuTexts[i].setFont(mainFont);
+		mainMenuTexts[i].setFillColor(sf::Color::White);
+		mainMenuTexts[i].setCharacterSize(50);
+		mainMenuTexts[i].setOrigin(mainMenuTexts[i].getGlobalBounds().width / 2, mainMenuTexts[i].getGlobalBounds().height / 2);
+		mainMenuTexts[i].setPosition(mainMenuButtons[i].getPosition().x, mainMenuButtons[i].getPosition().y - 10); // To jest voodoo/Stala Mimora
 	}
-	
-	// Copy allButtons to currentButtons for polling
-	std::copy(allButtons.begin(), allButtons.end(), currentButtons.begin());
+}
 
-	window->draw(title);
+void Game::drawMainMenu()
+{
+	for (int i = 0; i < 3; i++) {
+		window->draw(mainMenuButtons[i]);
+		window->draw(mainMenuTexts[i]);
+	}
+	window->draw(mainMenuTexts[3]);
 }
 
 void Game::pollMainMenu()
@@ -60,14 +48,22 @@ void Game::pollMainMenu()
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 	
 		for (int i = 0; i < 3; i++) {
-			sf::Vector2i mousePos(event.mouseButton.x + currentButtons[i].getOrigin().x, event.mouseButton.y + currentButtons[i].getOrigin().y);
-			if (currentButtons[i].getPosition().x <= mousePos.x &&
-				currentButtons[i].getPosition().y <= mousePos.y &&
-				currentButtons[i].getPosition().x + currentButtons[i].getSize().x >= mousePos.x && // TO POWINNO SIE DAC LEPIEJ???
-				currentButtons[i].getPosition().y + currentButtons[i].getSize().y >= mousePos.y)
+			sf::Vector2i mousePos(event.mouseButton.x + mainMenuButtons[i].getOrigin().x, event.mouseButton.y + mainMenuButtons[i].getOrigin().y);
+			if (mainMenuButtons[i].getPosition().x <= mousePos.x &&
+				mainMenuButtons[i].getPosition().y <= mousePos.y &&
+				mainMenuButtons[i].getPosition().x + mainMenuButtons[i].getSize().x >= mousePos.x && // TO POWINNO SIE DAC LEPIEJ???
+				mainMenuButtons[i].getPosition().y + mainMenuButtons[i].getSize().y >= mousePos.y)
 			{
-				gameState = i;
-				std::cout << i << "\n";
+				switch (i) {
+				case 0:
+					gameState = GameState::Play;
+					break;
+				case 1:
+					gameState = GameState::Settings;
+					break;
+				case 2:
+					window->close();
+				}
 				return;
 			}
 		}
@@ -80,10 +76,8 @@ Game::Game()
 {
 	window = new sf::RenderWindow(sf::VideoMode(width, height), "AimLab", sf::Style::Close);
 	window->setFramerateLimit(60);
-
-	// Main Menu = 0, Settings = 1, GameMode = 2
-	gameState = 0; // Lepszy bylby enum
-
+	gameState = GameState::MainMenu;
+	
 	// Load font
 	if (!mainFont.loadFromFile("HighlandGothicFLF.ttf"))
 	{
@@ -92,6 +86,7 @@ Game::Game()
 		window->close();
 	}
 
+	initiateMainMenu();
 }
 
 Game::~Game()
@@ -118,18 +113,16 @@ void Game::polling()
 			window->close();
 
 		switch (gameState) {
-		case 0:
+		case GameState::MainMenu:
 			pollMainMenu();
-			//std::cout << event.mouseButton.x << " " << event.mouseButton.y << "\n";
-
 			break;
-		case 1:
+		case GameState::Settings:
 			// Ogarnia klikanie w opcjach
 			break;
-		case 2:
+		case GameState::GameMode:
 			// Ogarnia klikanie wyboru trybu
 			break;
-		case 3:
+		case GameState::Play:
 			// Ogarnia klikanie we wlasciwej grze
 			break;
 		}
@@ -141,16 +134,16 @@ void Game::draw()
 	window->clear(sf::Color::Black);
 
 	switch (gameState) {
-	case 0:
+	case GameState::MainMenu:
 		drawMainMenu();
 		break;
-	case 1:
+	case GameState::Settings:
 		//drawSettingsMenu();
 		break;
-	case 2:
+	case GameState::GameMode:
 		//drawGameModeMenu();
 		break;
-	case 3:
+	case GameState::Play:
 		// tu juz normalnie rysowanie juz podczas gry
 		break;
 	}

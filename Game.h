@@ -18,7 +18,7 @@ struct Settings {
 	short int targetShape = 0; // 0 - circle, 1 - square, etc.
 };
 
-
+enum class GameState { MainMenu, Settings, GameMode, Play, Exit };
 
 class Game
 {
@@ -30,12 +30,18 @@ private:
 	// Font
 	sf::Font mainFont;
 
-	// Menus
-	short int gameState; // Lepszy bylby enum
-	std::array<sf::RectangleShape, 5> currentButtons; // For menu polling detection
+	GameState gameState; // Lepszy bylby enum
 
+	// Menu etc
+	sf::RectangleShape mainMenuButtons[3]; // For menu polling detection
+	sf::Text mainMenuTexts[4];
+	sf::RectangleShape gameModeMenuButtons[3];
+	void initiateMainMenu();
 	void drawMainMenu();
 	void pollMainMenu();
+
+	sf::RectangleShape settingsMenuButtons[5];
+	sf::Text settingsMenuTexts[5];
 	void drawGameModeMenu();
 	void drawSettingsMenu();
 
