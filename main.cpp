@@ -5,15 +5,15 @@ int main() {
 	std::srand(static_cast<unsigned>(time(NULL)));
 	 
 	Game game;
+	Shape shape;
 	
-
 	while (game.isRunning()) {
 
 		game.update();
-
+		
 		game.draw();
 	}
 
-
+	
 	return 0;
 }

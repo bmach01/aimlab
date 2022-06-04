@@ -21,7 +21,7 @@ void Game::update()
 {
 	polling();
 
-	
+	shape.chooseShapeAndCustomiseIt();
 	
 
 }
@@ -30,23 +30,37 @@ void Game::polling()
 {
 	while (window->pollEvent(event)) {
 
-		switch (event.type) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {//to do: check the position, options 
+			switch (shape.whichShapeToDraw) {
+			case 0:
+				break;
+			case 1:
+				
+				break;
 
-		case sf::Event::Closed:
-			window->close();
-			break;
+			}
+
 
 		}
 	}
 }
 
 
+
 void Game::draw()
 {
 	window->clear(sf::Color::Black);
 
+	switch (shape.whichShapeToDraw)
+	{
+	case 0:
+		window->draw(shape.rectangle);
+		break;
+	case 1:
+		window->draw(shape.circle);
+		break;
 	
-	
+	}
 	window->display();
 }
 

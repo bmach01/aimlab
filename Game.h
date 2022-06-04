@@ -1,15 +1,14 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include<ctime>
-
+#include"Shape.h"
 //window size
 constexpr int width = 800, height = 600;
+
 
 class Game
 {
 private:
 	// SFML window
-	
+	Shape shape;
 	sf::Event event;
 	sf::RenderWindow* window;
 public:
@@ -30,20 +29,3 @@ public:
 	
 };
 
-class Shape {
-private:
-	sf::RectangleShape rectangle;
-	sf::ConvexShape convex;
-	sf::CircleShape circle;
-	//is needed to cordinate customization and drawing
-	unsigned int whichShapeToDraw{};
-public:
-	// chooseing a shape 
-	void chooseShapeAndCustomiseIt();
-	// drawing a shape
-	//void drawCustomShape();
-	// shape customization
-	void randomRectangle();
-	void randomConvex();// deletable
-	void randomCircle();
-};
