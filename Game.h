@@ -30,23 +30,29 @@ private:
 	// Font
 	sf::Font mainFont;
 
-	GameState gameState; // Lepszy bylby enum
+	GameState gameState;
+	Settings currentSettings;
+	sf::RectangleShape backButton;
+	sf::Text backText;
+	void initiateBackButton();
+	void pollMenus();
+	void drawMenus();
 
-	// Menu etc
+	// Main menu
 	sf::RectangleShape mainMenuButtons[3]; // For menu polling detection
 	sf::Text mainMenuTexts[4];
-	sf::RectangleShape gameModeMenuButtons[3];
 	void initiateMainMenu();
-	void drawMainMenu();
-	void pollMainMenu();
 
-	sf::RectangleShape settingsMenuButtons[5];
-	sf::Text settingsMenuTexts[5];
-	void drawGameModeMenu();
-	void drawSettingsMenu();
+	// Game mode menu
+	sf::RectangleShape gameModeMenuButtons[2];
+	sf::Text gameModeMenuTexts[3];
+	void initiateGameModeMenu();
 
-	// Settings struct
-	Settings currentSettings;
+	// Settings menu
+	sf::RectangleShape settingsMenuButtons[13];
+	sf::Text settingsMenuTexts[6];
+	void initiateSettingsMenu();
+
 public:
 	// (De)Constructor
 	Game();
