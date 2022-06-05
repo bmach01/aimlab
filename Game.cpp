@@ -2,36 +2,14 @@
 
 void Game::drawMenus()
 {
-	// Containers for current state of game buttons and texts
-	std::vector<sf::RectangleShape> currentButtons;
-	std::vector<sf::Text> currentTexts;
-
-	switch (gameState) {
-	case GameState::MainMenu:
-		currentButtons.insert(currentButtons.begin(), std::begin(mainMenuButtons), std::end(mainMenuButtons));
-		currentTexts.insert(currentTexts.begin(), std::begin(mainMenuTexts), std::end(mainMenuTexts));
-		break;
-	case GameState::Settings:
-		currentButtons.insert(currentButtons.begin(), std::begin(settingsMenuButtons), std::end(settingsMenuButtons));
-		currentTexts.insert(currentTexts.begin(), std::begin(settingsMenuTexts), std::end(settingsMenuTexts));
-		currentButtons.push_back(backButton);
-		currentTexts.push_back(backText);
-		break;
-	case GameState::GameMode:
-		currentButtons.insert(currentButtons.begin(), std::begin(gameModeMenuButtons), std::end(gameModeMenuButtons));
-		currentTexts.insert(currentTexts.begin(), std::begin(gameModeMenuTexts), std::end(gameModeMenuTexts));
-		currentButtons.push_back(backButton);
-		currentTexts.push_back(backText);
-		break;
-	}
-
 	// Drawing correct buttsons and text
-	for (auto button : currentButtons) {
+	for (auto button : getCurrentButtons()) {
 		window->draw(button);
 	}
-	for (auto text : currentTexts) {
+	for (auto text : getCurrentTexts()) {
 		window->draw(text);
 	}
+
 }
 
 void Game::initiateMainMenu()
@@ -66,6 +44,21 @@ void Game::initiateMainMenu()
 	}
 }
 
+void Game::supportMainMenu(int button_id)
+{
+	switch (button_id) {
+	case 0:
+		gameState = GameState::GameMode;
+		return;
+	case 1:
+		gameState = GameState::Settings;
+		return;
+	case 2:
+		window->close();
+		return;
+	}
+}
+
 void Game::initiateGameModeMenu()
 {
 	// Main text
@@ -97,6 +90,21 @@ void Game::initiateGameModeMenu()
 	}
 }
 
+void Game::supportGameModeMenu(int button_id)
+{
+	switch (button_id) {
+	case 0:
+		//clasic
+		return;
+	case 1:
+		//survival
+		return;
+	case 2:
+		gameState = GameState::MainMenu;
+		return;
+	}
+}
+
 void Game::initiateSettingsMenu()
 {
 	// Options texts
@@ -115,13 +123,6 @@ void Game::initiateSettingsMenu()
 		settingsMenuTexts[i].setPosition(width / 10, (height / 7) * (i + 1));
 	}
 
-	// Buttons looks
-	for (int i = 0; i < 13; i++) {
-		settingsMenuButtons[i].setSize(sf::Vector2f(80.f, 80.f));
-		settingsMenuButtons[i].setFillColor(sf::Color::Black);
-		settingsMenuButtons[i].setOutlineThickness(2.f);
-	}
-
 	// Color buttons
 	settingsMenuButtons[0].setFillColor(sf::Color::White);
 	settingsMenuButtons[1].setFillColor(sf::Color::Blue);
@@ -131,26 +132,169 @@ void Game::initiateSettingsMenu()
 
 	// Position in correct rows
 	// COLOR / SIZE / SHAPE rows
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i <= 3; i++) {
 		settingsMenuButtons[i].setPosition(width / 2 + i * 100.f,
 			settingsMenuTexts[0].getPosition().y - 20.f);
+		settingsMenuButtons[i].setSize(sf::Vector2f(80.f, 80.f));
+		settingsMenuButtons[i].setOutlineThickness(2.f);
 	}
+
+	// Random color
+	settingsMenuButtons[4].setSize(sf::Vector2f(80.f, 80.f));
+	settingsMenuButtons[4].setOutlineThickness(2.f);
+	settingsMenuButtons[4].setPosition(width / 2, settingsMenuTexts[1].getPosition().y - 20.f); // Random color
+	settingsMenuButtons[4].setTexture(&falsemark, false);
+
+
 	// Size buttons
-	for (int i = 4; i < 7; i++) {
-		settingsMenuButtons[i].setPosition(width / 2 + (i - 4) * 100.f,
-			settingsMenuTexts[2].getPosition().y - 20.f);
+	float spaceBetween{};
+	for (int i = 5; i <= 7; i++) {
+		settingsMenuButtons[i].setSize(sf::Vector2f(25.f * (i - 3), 25.f * (i - 3)));
+		settingsMenuButtons[i].setPosition(width / 2 + spaceBetween,
+			settingsMenuTexts[2].getPosition().y + 60.f - i * 12.5f);
+		spaceBetween += settingsMenuButtons[i].getSize().x + 50.f;
+
+		settingsMenuButtons[i].setFillColor(sf::Color::Black);
+		settingsMenuButtons[i].setOutlineThickness(2.f);
 	}
+	// Random size
+	settingsMenuButtons[8].setSize(sf::Vector2f(80.f, 80.f));
+	settingsMenuButtons[8].setOutlineThickness(2.f);
+	settingsMenuButtons[8].setPosition(width / 2, settingsMenuTexts[3].getPosition().y - 20.f); // Random size
+	settingsMenuButtons[8].setTexture(&falsemark, false);
+
 	// Shape buttons
-	for (int i = 7; i < 10; i++) {
-		settingsMenuButtons[i].setPosition(width / 2 + (i - 7) * 100.f,
+	for (int i = 9; i <= 11; i++) {
+		settingsMenuButtons[i].setPosition(width / 2 + (i - 9) * 100.f,
 			settingsMenuTexts[4].getPosition().y - 20.f);
+		settingsMenuButtons[i].setSize(sf::Vector2f(80.f, 80.f));
+		settingsMenuButtons[i].setOutlineThickness(2.f);
 	}
+	settingsMenuButtons[9].setTexture(&circle, false);
+	settingsMenuButtons[11].setTexture(&pentagon, false);
 
-	// Random buttons
-	settingsMenuButtons[10].setPosition(width / 2, settingsMenuTexts[1].getPosition().y - 20.f);
-	settingsMenuButtons[11].setPosition(width / 2, settingsMenuTexts[3].getPosition().y - 20.f);
-	settingsMenuButtons[12].setPosition(width / 2, settingsMenuTexts[5].getPosition().y - 20.f);
+	// Random shape
+	settingsMenuButtons[12].setSize(sf::Vector2f(80.f, 80.f));
+	settingsMenuButtons[12].setOutlineThickness(2.f);
+	settingsMenuButtons[12].setPosition(width / 2, settingsMenuTexts[5].getPosition().y - 20.f); // Random shape
+	settingsMenuButtons[12].setTexture(&falsemark, false);
 
+}
+void Game::supportSettingsMenu(int button_id)
+{
+	switch (button_id) {
+	case 0:
+		currentSettings.targetColor = sf::Color::White;
+		return;
+	case 1:
+		currentSettings.targetColor = sf::Color::Blue;
+		return;
+	case 2:
+		currentSettings.targetColor = sf::Color::Red;
+		return;
+	case 3:
+		currentSettings.targetColor = sf::Color::Green;
+		return;
+	case 4:
+		currentSettings.randomColor = !currentSettings.randomColor;
+		if (!currentSettings.randomColor)
+			settingsMenuButtons[4].setTexture(&falsemark, false);
+		else {
+			settingsMenuButtons[4].setTexture(&truemark, false);
+		}
+		return;
+	case 5:
+		currentSettings.targetSize = sf::Vector2f(50.f, 50.f);
+		return;
+	case 6:
+		currentSettings.targetSize = sf::Vector2f(75.f, 75.f);
+		return;
+	case 7:
+		currentSettings.targetSize = sf::Vector2f(100.f, 100.f);
+		return;
+	case 8:
+		currentSettings.randomSize = !currentSettings.randomSize;
+		if (!currentSettings.randomSize)
+			settingsMenuButtons[8].setTexture(&falsemark, false);
+		else {
+			settingsMenuButtons[8].setTexture(&truemark, false);
+		}
+		return;
+	case 9:
+		currentSettings.targetShape = 0; // Circle
+		return;
+	case 10:
+		currentSettings.targetShape = 1; // Square
+		return;
+	case 11:
+		currentSettings.targetShape = 2; // Else
+		return;
+	case 12:
+		currentSettings.randomShape = !currentSettings.randomShape;
+		if (!currentSettings.randomShape)
+			settingsMenuButtons[12].setTexture(&falsemark, false);
+		else {
+			settingsMenuButtons[12].setTexture(&truemark, false);
+		}
+		return;
+	case 13:
+		gameState = GameState::MainMenu;
+		return;
+	}
+}
+
+void Game::loadTexturesFonts()
+{
+	// Load font
+	if (!mainFont.loadFromFile("texturesandfonts/HighlandGothicFLF.ttf") ||
+		!pentagon.loadFromFile("texturesandfonts/pentagon.png") ||
+		!circle.loadFromFile("texturesandfonts/circle.png") ||
+		!falsemark.loadFromFile("texturesandfonts/false.png") ||
+		!truemark.loadFromFile("texturesandfonts/true.png"))
+	{
+		window->close();
+	}
+	
+	truemark.setSmooth(true);
+	falsemark.setSmooth(true);
+	pentagon.setSmooth(true);
+	circle.setSmooth(true);
+}
+
+std::vector<sf::RectangleShape> Game::getCurrentButtons()
+{
+	std::vector<sf::RectangleShape> currentButtons;
+	switch (gameState) {
+	case GameState::MainMenu:
+		currentButtons.insert(currentButtons.begin(), std::begin(mainMenuButtons), std::end(mainMenuButtons));
+		return currentButtons;
+	case GameState::Settings:
+		currentButtons.insert(currentButtons.begin(), std::begin(settingsMenuButtons), std::end(settingsMenuButtons));
+		currentButtons.push_back(backButton);
+		return currentButtons;
+	case GameState::GameMode:
+		currentButtons.insert(currentButtons.begin(), std::begin(gameModeMenuButtons), std::end(gameModeMenuButtons));
+		currentButtons.push_back(backButton);
+		return currentButtons;
+	}
+}
+
+std::vector<sf::Text> Game::getCurrentTexts()
+{
+	std::vector<sf::Text> currentTexts;
+	switch (gameState) {
+	case GameState::MainMenu:
+		currentTexts.insert(currentTexts.begin(), std::begin(mainMenuTexts), std::end(mainMenuTexts));
+		return currentTexts;
+	case GameState::Settings:
+		currentTexts.insert(currentTexts.begin(), std::begin(settingsMenuTexts), std::end(settingsMenuTexts));
+		currentTexts.push_back(backText);
+		return currentTexts;
+	case GameState::GameMode:
+		currentTexts.insert(currentTexts.begin(), std::begin(gameModeMenuTexts), std::end(gameModeMenuTexts));
+		currentTexts.push_back(backText);
+		return currentTexts;
+	}
 }
 
 void Game::initiateBackButton()
@@ -172,31 +316,30 @@ void Game::initiateBackButton()
 
 void Game::pollMenus()
 {
+	// On left mouse press
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-	
-		for (int i = 0; i < 3; i++) {
-			sf::Vector2i mousePos(event.mouseButton.x + mainMenuButtons[i].getOrigin().x, event.mouseButton.y + mainMenuButtons[i].getOrigin().y);
-			if (mainMenuButtons[i].getPosition().x <= mousePos.x &&
-				mainMenuButtons[i].getPosition().y <= mousePos.y &&
-				mainMenuButtons[i].getPosition().x + mainMenuButtons[i].getSize().x >= mousePos.x && // TO POWINNO SIE DAC LEPIEJ???
-				mainMenuButtons[i].getPosition().y + mainMenuButtons[i].getSize().y >= mousePos.y)
-			{
-				switch (i) {
-				case 0:
-					gameState = GameState::GameMode;
-					break;
-				case 1:
-					gameState = GameState::Settings;
-					break;
-				case 2:
-					window->close();
+
+		sf::Vector2f mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)); // mouse position relative to window
+		std::vector<sf::RectangleShape>currentButtons = getCurrentButtons();
+
+		for (int i = 0; i < currentButtons.size(); i++) { // iterate through all current buttons
+			if (currentButtons[i].getGlobalBounds().contains(mousePos)) {
+
+				// Correct button support
+				switch (gameState) {
+				case GameState::MainMenu:
+					supportMainMenu(i);
+					return;
+				case GameState::GameMode:
+					supportGameModeMenu(i);
+					return;
+				case GameState::Settings:
+					supportSettingsMenu(i);
+					return;
 				}
-				return;
 			}
 		}
-
 	}
-	
 }
 
 Game::Game()
@@ -205,14 +348,7 @@ Game::Game()
 	window->setFramerateLimit(60);
 	gameState = GameState::MainMenu;
 	
-	// Load font
-	if (!mainFont.loadFromFile("HighlandGothicFLF.ttf"))
-	{
-		// Error
-		std::cout << "Cannot load fonts!\n";
-		window->close();
-	}
-
+	loadTexturesFonts();
 	initiateBackButton();
 	initiateMainMenu();
 	initiateGameModeMenu();
@@ -244,6 +380,9 @@ void Game::polling()
 
 		if (gameState != GameState::Play)
 			pollMenus();
+		else {
+			//pollGame();
+		}
 
 	}
 }
