@@ -63,8 +63,9 @@ private:
 	sf::Text settingsMenuTexts[6];
 	void initiateSettingsMenu();
 	void supportSettingsMenu(int button_id);
-
+  
 public:
+	
 	// (De)Constructor
 	Game();
 	virtual ~Game();
@@ -76,6 +77,7 @@ public:
 	void update();
 	void polling();
 	void draw();
+	
+	void returnWindow();
+	
 };
-
-

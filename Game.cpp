@@ -345,6 +345,7 @@ void Game::pollMenus()
 Game::Game()
 {
 	window = new sf::RenderWindow(sf::VideoMode(width, height), "AimLab", sf::Style::Close);
+
 	window->setFramerateLimit(60);
 	gameState = GameState::MainMenu;
 	
@@ -369,6 +370,9 @@ void Game::update()
 {
 	polling();
 
+	
+	
+
 }
 
 void Game::polling()
@@ -387,15 +391,17 @@ void Game::polling()
 	}
 }
 
+
 void Game::draw()
 {
 	window->clear(sf::Color::Black);
+
 
 	if (gameState != GameState::Play)
 		drawMenus();
 	else {
 		//draw targets and shiet
 	}
-
 	window->display();
 }
+
