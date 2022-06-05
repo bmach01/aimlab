@@ -1,15 +1,23 @@
 #include "Game.h"
 void Shape::chooseShapeAndCustomiseIt()
 {
-	whichShapeToDraw = rand() % 2;
-	switch (whichShapeToDraw)
-	{
-	case 0:
-		randomRectangle();
-		break;
-	case 1:
-		randomCircle();
-		break;
+	if (isShapeNeeded) {
+		isShapeNeeded = false;
+		switch (game.draw())//to do: check the options
+		{
+		case 1:
+			whichShapeToDraw = rand() % 2;
+			switch (whichShapeToDraw)
+			{
+			case 0:
+				randomRectangle();
+				break;
+			case 1:
+				randomCircle();
+				break;
+			}
+			break;
+		}
 	}
 }
 /*
@@ -30,6 +38,7 @@ void Shape::drawCustomShape()
 
 void Shape::randomRectangle()
 {
+	
 	float length = static_cast<float>(rand() % 40 + 11);
 	this->rectangle.setSize(sf::Vector2f(length, length));
 
@@ -65,5 +74,16 @@ void Shape::randomCircle()
 
 	this->circle.setFillColor(sf::Color::Red);
 }
+
+void Shape::onClick()
+{
+	this->isShapeNeeded != isShapeNeeded;
+	this->circle.setRadius(0);
+	this->rectangle.setSize(sf::Vector2f(0, 0));
+	this->rectangle.setPosition(sf::Vector2f(-1.f, -1.f));
+	this->circle.setPosition(sf::Vector2f(-1.f, -1.f));
+}
+
+
 
 

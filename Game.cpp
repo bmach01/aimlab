@@ -370,7 +370,7 @@ void Game::update()
 {
 	polling();
 
-	
+	shape.chooseShapeAndCustomiseIt();
 	
 
 }
@@ -379,8 +379,11 @@ void Game::polling()
 {
 	while (window->pollEvent(event)) {
 
+
+
 		if (event.type == sf::Event::Closed)
 			window->close();
+
 
 		if (gameState != GameState::Play)
 			pollMenus();
@@ -392,15 +395,27 @@ void Game::polling()
 }
 
 
+
 void Game::draw()
 {
 	window->clear(sf::Color::Black);
 
 
+	switch (shape.whichShapeToDraw)
+	{
+	case 0:
+		window->draw(shape.rectangle);
+		break;
+	case 1:
+		window->draw(shape.circle);
+		break;
+	
+
 	if (gameState != GameState::Play)
 		drawMenus();
 	else {
 		//draw targets and shiet
+
 	}
 	window->display();
 }
