@@ -1,34 +1,35 @@
-#pragma once
 #include "Shape.h"
-#include "Game.h"
-Shape::Shape() {};
 
-Shape::Shape(Game *g)
+Shape::Shape()
 {
-	gamePointer = g;
-	update();
-}
-
-void Shape::update() {
-	gameCurrentSettings = gamePointer->getSettings();
+	//std::cout << gameCurrentSettings.randomSize << "shape struct\n";
 }
 
 void Shape::chooseShapeAndCustomiseIt()
 {
+	//std::cout << gameCurrentSettings.randomShape << " choosehsape random shape\n";
+	//std::cout << isShapeNeeded << "is shape needed " << "\n";
 	if (isShapeNeeded) {
+		//std::cout << "is shape needed " << isShapeNeeded << "\n";
 		isShapeNeeded = false;
 		if (gameCurrentSettings.randomShape) {
 			whichShapeToDraw = rand() % 3;
+			//std::cout << "WHICH SHAPE TO DRAW AAAAAA " << whichShapeToDraw << "\n";
 			switch (whichShapeToDraw)
 			{
 			case 0:
+				//std::cout << "WhichShapeToDraw " << whichShapeToDraw << "\n";
 				randomRectangle();
 				break;
 			case 1:
+				//std::cout << "WhichShapeToDraw " << whichShapeToDraw << "\n";
+
 				randomCircle();
 				break;
 			case 2:
 				randomConvex();
+				//std::cout << "WhichShapeToDraw " << whichShapeToDraw << "\n";
+
 				break;
 			}
 		}
@@ -118,25 +119,27 @@ void Shape::randomConvex()
 
 		this->convex.setPoint(0, sf::Vector2f(0, 0));
 		this->convex.setPoint(1, sf::Vector2f(length, 0));
-		this->convex.setPoint(2, sf::Vector2f(length / 2, -(length / 2) * 1.7));
+		this->convex.setPoint(2, sf::Vector2f(length / 2, -(length / 2) * 1.7f));
 	}
 	else {
 		length = gameCurrentSettings.targetSize.x;
 		this->convex.setPoint(0, sf::Vector2f(0, 0));
 		this->convex.setPoint(1, sf::Vector2f(length, 0));
-		this->convex.setPoint(2, sf::Vector2f(length / 2, -(length / 2) * 1.7));
+		this->convex.setPoint(2, sf::Vector2f(length / 2, -(length / 2) * 1.7f));
 	}
 
 	this->convex.setPosition(sf::Vector2f(
 		static_cast<float>(rand() % static_cast<int>(width - length)),
-		static_cast<float>(rand() % static_cast<int>(height + ((length / 2) * 1.7)))));
+		static_cast<float>(rand() % static_cast<int>(height + ((length / 2) * 1.7f)))));
 
 
 }
 
 void Shape::randomCircle()
 {
-	float length = static_cast<float>(rand() % 40 + 11);
+	//std::cout << "JA jebix\n";
+	//float length = static_cast<float>(rand() % 40 + 11);
+	float length = 50.f;
 	if (gameCurrentSettings.randomColor) {
 		int colorNum = (rand() % 4);
 		switch (colorNum)
@@ -159,9 +162,12 @@ void Shape::randomCircle()
 		this->circle.setFillColor(gameCurrentSettings.targetColor);
 	}
 	if (gameCurrentSettings.randomSize) {
+		//std::cout << gameCurrentSettings.randomSize << "RANDOM_SIZE\n";
 		this->circle.setRadius(length);
 	}
 	else {
+		//std::cout << gameCurrentSettings.randomSize << "NONRANDOM_SIZE\n";
+
 		length = gameCurrentSettings.targetSize.x;
 		this->circle.setRadius(gameCurrentSettings.targetSize.x);
 	}

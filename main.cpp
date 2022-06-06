@@ -1,11 +1,15 @@
-#include "Shape.h"
+#include "Game.h"
 
 int main() {
 	std::cout << "START\n";
 
-	Game game;
-	Shape shape(&game);
-	//game.shape = &shape;
+	Shape shape;
+	Game game(&shape);
+	game.chrset();
+	std::cout << shape.gameCurrentSettings.randomColor << "\n";
+	game.shareSettings();
+	std::cout << shape.gameCurrentSettings.randomColor << "\n";
+
 
 	while (game.isRunning()) {
 

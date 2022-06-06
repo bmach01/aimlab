@@ -1,34 +1,13 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include<ctime>
-#include<iostream>
-#include <array>
-
-// Window size
-constexpr int width = 1400, height = 800;
-
-// Struct containing global settings
-struct Settings {
-	bool randomColor = false;
-	sf::Color targetColor = sf::Color::Red;
-
-	bool randomSize = false;
-	sf::Vector2f targetSize = sf::Vector2f(50.f, 50.f);
-
-	bool randomShape = false;
-	short int targetShape = 0; // 0 - circle, 1 - square, etc.
-};
-
-enum class GameState { MainMenu, Settings, GameMode, Play };
-
-class Shape;
+#include "Shape.h"
 
 class Game
 {
 private:
 	// SFML window
-	sf::RenderWindow window;
+	sf::RenderWindow *window;
 	sf::Event event;
+	Settings currentSettings;
 
 	// Font and textures
 	sf::Texture circle;
@@ -40,7 +19,6 @@ private:
 
 	// Supporting all menus
 	GameState gameState;
-	Settings currentSettings;
 	sf::RectangleShape backButton;
 	sf::Text backText;
 	std::vector<sf::RectangleShape> getCurrentButtons(); // Return correct set of buttons for current game state
@@ -68,17 +46,18 @@ private:
 	void supportSettingsMenu(int button_id);
 
 public:
-	//void useShape();
+
+	void chrset();
 	Shape* shape;
 
-	
-	// (De)Constructor
 	Game();
+	// (De)Constructor
+	Game(Shape *sh);
 	virtual ~Game();
 
 	// Access
 	const bool isRunning();
-	const Settings getSettings();
+	void shareSettings();
 
 	// Public functions
 	void update();

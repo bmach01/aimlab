@@ -1,15 +1,13 @@
-#pragma once
 #include "Game.h"
-#include "Shape.h"
 
 void Game::drawMenus()
 {
 	// Drawing correct buttsons and text
 	for (auto button : getCurrentButtons()) {
-		window.draw(button);
+		window->draw(button);
 	}
 	for (auto text : getCurrentTexts()) {
-		window.draw(text);
+		window->draw(text);
 	}
 
 }
@@ -56,7 +54,7 @@ void Game::supportMainMenu(int button_id)
 		gameState = GameState::Settings;
 		return;
 	case 2:
-		window.close();
+		window->close();
 		return;
 	}
 }
@@ -96,7 +94,7 @@ void Game::supportGameModeMenu(int button_id)
 {
 	switch (button_id) {
 	case 0:
-		//clasic
+		gameState = GameState::Play;
 		return;
 	case 1:
 		//survival
@@ -242,14 +240,11 @@ void Game::supportSettingsMenu(int button_id)
 		return;
 	case 13:
 		gameState = GameState::MainMenu;
+		std::cout << "SHARE SETTINGS GAME SETTINGS MENU AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n";
+		shareSettings();
 		return;
 	}
 }
-/*
-void Game::useShape()
-{
-	std::cout << shape->whichShapeToDraw << "\n";
-}*/
 
 void Game::loadTexturesFonts()
 {
@@ -260,7 +255,7 @@ void Game::loadTexturesFonts()
 		!falsemark.loadFromFile("texturesandfonts/false.png") ||
 		!truemark.loadFromFile("texturesandfonts/true.png"))
 	{
-		window.close();
+		window->close();
 	}
 	
 	truemark.setSmooth(true);
@@ -327,7 +322,7 @@ void Game::pollMenus()
 	// On left mouse press
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
-		sf::Vector2f mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)); // mouse position relative to window
+		sf::Vector2f mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window)); // mouse position relative to window
 		std::vector<sf::RectangleShape>currentButtons = getCurrentButtons();
 
 		for (int i = 0; i < currentButtons.size(); i++) { // iterate through all current buttons
@@ -350,12 +345,14 @@ void Game::pollMenus()
 	}
 }
 
-Game::Game()
+Game::Game(Shape *sh)
 {
-	sf::RenderWindow window(sf::VideoMode(width, height), "AimLab", sf::Style::Close);
-	window.setFramerateLimit(60);
+	window = new sf::RenderWindow(sf::VideoMode(width, height), "AimLab", sf::Style::Close);
+	window->setFramerateLimit(60);
 	gameState = GameState::MainMenu;
-	
+	shape = sh;
+	shareSettings();
+
 	loadTexturesFonts();
 	initiateBackButton();
 	initiateMainMenu();
@@ -365,32 +362,41 @@ Game::Game()
 
 Game::~Game()
 {
-	//delete window;
+	delete window;
 }
 
 const bool Game::isRunning()
 {
-	return window.isOpen();
+	return window->isOpen();
 }
 
-const Settings Game::getSettings()
+void Game::shareSettings()
 {
-	return currentSettings;
+	shape->gameCurrentSettings = currentSettings;
+	std::cout << "SHAPE " << shape->gameCurrentSettings.randomShape << " : " << currentSettings.randomShape << " GAME\n";
+}
+
+void Game::chrset()
+{
+	std::cout << currentSettings.randomColor << "GAME\n";
+	currentSettings.randomColor = true;
+	std::cout << currentSettings.randomColor << "GAME\n";
 }
 
 void Game::update()
 {
 	polling();
 	//useShape();
+	shape->chooseShapeAndCustomiseIt();
 
 }
 
 void Game::polling()
 {
-	while (window.pollEvent(event)) {
+	while (window->pollEvent(event)) {
 
 		if (event.type == sf::Event::Closed)
-			window.close();
+			window->close();
 
 		if (gameState != GameState::Play)
 			pollMenus();
@@ -403,13 +409,45 @@ void Game::polling()
 
 void Game::draw()
 {
-	window.clear(sf::Color::Black);
+	window->clear(sf::Color::Black);
 
-	if (gameState != GameState::Play)
+	if (gameState != GameState::Play) {
 		drawMenus();
+	}
 	else {
-		//draw targets and shiet
+		std::cout << "PLAY\n";
+		if (currentSettings.randomShape) {
+			std::cout << "RANDOMSHAPE\n";
+			switch (shape->whichShapeToDraw)
+			{
+			case 0:
+				window->draw(shape->rectangle);
+				break;
+			case 1:
+				window->draw(shape->circle);
+				break;
+			case 2:
+				window->draw(shape->convex);
+				break;
+			}
+		}
+		else {
+			std::cout << "NONRANDOMSHAPE\n";
+			switch (currentSettings.targetShape)
+			{
+			case 0:
+				std::cout << shape->circle.getRadius() << "\n";
+				window->draw(shape->circle);
+				break;
+			case 1:
+				window->draw(shape->rectangle);
+				break;
+			case 2:
+				window->draw(shape->convex);
+				break;
+			}
+		}
 	}
 
-	window.display();
+	window->display();
 }
