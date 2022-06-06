@@ -95,6 +95,7 @@ void Shape::randomConvex()
 	float length = static_cast<float>(rand() % 40 + 11);
 
 	if (gameCurrentSettings.randomColor) {
+		std::cout << "random kolor" << gameCurrentSettings.randomColor << "\n";
 		int colorNum = (rand() % 4);
 		switch (colorNum)
 		{

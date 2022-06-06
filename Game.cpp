@@ -387,7 +387,6 @@ void Game::update()
 {
 	polling();
 	//useShape();
-	shape->chooseShapeAndCustomiseIt();
 
 }
 
@@ -415,38 +414,45 @@ void Game::draw()
 		drawMenus();
 	}
 	else {
+		
+		shape->chooseShapeAndCustomiseIt();
+
 		std::cout << "PLAY\n";
-		if (currentSettings.randomShape) {
-			std::cout << "RANDOMSHAPE\n";
-			switch (shape->whichShapeToDraw)
-			{
-			case 0:
-				window->draw(shape->rectangle);
-				break;
-			case 1:
-				window->draw(shape->circle);
-				break;
-			case 2:
-				window->draw(shape->convex);
-				break;
+		
+
+
+			if (currentSettings.randomShape) {
+				std::cout << "RANDOMSHAPE\n";
+				switch (shape->whichShapeToDraw)
+				{
+				case 0:
+					window->draw(shape->rectangle);
+					break;
+				case 1:
+					window->draw(shape->circle);
+					break;
+				case 2:
+					window->draw(shape->convex);
+					break;
+				}
 			}
-		}
-		else {
-			std::cout << "NONRANDOMSHAPE\n";
-			switch (currentSettings.targetShape)
-			{
-			case 0:
-				std::cout << shape->circle.getRadius() << "\n";
-				window->draw(shape->circle);
-				break;
-			case 1:
-				window->draw(shape->rectangle);
-				break;
-			case 2:
-				window->draw(shape->convex);
-				break;
+			else {
+				std::cout << "NONRANDOMSHAPE\n";
+				switch (currentSettings.targetShape)
+				{
+				case 0:
+					std::cout << shape->circle.getRadius() << "\n";
+					window->draw(shape->circle);
+					break;
+				case 1:
+					window->draw(shape->rectangle);
+					break;
+				case 2:
+					window->draw(shape->convex);
+					break;
+				}
 			}
-		}
+		
 	}
 
 	window->display();
