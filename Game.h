@@ -1,7 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include<ctime>
+#include<iostream>
 #include <array>
-#include <iostream>
 
 // Window size
 constexpr int width = 1400, height = 800;
@@ -18,13 +19,15 @@ struct Settings {
 	short int targetShape = 0; // 0 - circle, 1 - square, etc.
 };
 
-enum class GameState { MainMenu, Settings, GameMode, Play, Exit };
+enum class GameState { MainMenu, Settings, GameMode, Play };
+
+class Shape;
 
 class Game
 {
 private:
 	// SFML window
-	sf::RenderWindow* window;
+	sf::RenderWindow window;
 	sf::Event event;
 
 	// Font and textures
@@ -65,17 +68,20 @@ private:
 	void supportSettingsMenu(int button_id);
 
 public:
+	//void useShape();
+	Shape* shape;
+
+	
 	// (De)Constructor
 	Game();
 	virtual ~Game();
 
 	// Access
 	const bool isRunning();
+	const Settings getSettings();
 
 	// Public functions
 	void update();
 	void polling();
 	void draw();
 };
-
-
