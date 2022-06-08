@@ -5,11 +5,7 @@ int main() {
 	
 	Shape shape;
 	Game game(&shape);
-	game.chrset();
-	std::cout << shape.gameCurrentSettings.randomColor << "\n";
-	game.shareSettings();
-	std::cout << shape.gameCurrentSettings.randomColor << "\n";
-
+	
 
 	while (game.isRunning()) {
 

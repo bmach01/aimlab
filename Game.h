@@ -46,8 +46,6 @@ private:
 	void supportSettingsMenu(int button_id);
 
 public:
-
-	void chrset();
 	Shape* shape;
 
 	Game();

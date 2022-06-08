@@ -197,6 +197,7 @@ void Game::supportSettingsMenu(int button_id)
 		currentSettings.targetColor = sf::Color::Green;
 		return;
 	case 4:
+		
 		currentSettings.randomColor = !currentSettings.randomColor;
 		if (!currentSettings.randomColor)
 			settingsMenuButtons[4].setTexture(&falsemark, false);
@@ -240,7 +241,8 @@ void Game::supportSettingsMenu(int button_id)
 		return;
 	case 13:
 		gameState = GameState::MainMenu;
-		std::cout << "SHARE SETTINGS GAME SETTINGS MENU AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n";
+		
+					
 		shareSettings();
 		return;
 	}
@@ -319,6 +321,7 @@ void Game::initiateBackButton()
 
 void Game::pollMenus()
 {
+	
 	// On left mouse press
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
@@ -337,6 +340,7 @@ void Game::pollMenus()
 					supportGameModeMenu(i);
 					return;
 				case GameState::Settings:
+					
 					supportSettingsMenu(i);
 					return;
 				}
@@ -373,14 +377,7 @@ const bool Game::isRunning()
 void Game::shareSettings()
 {
 	shape->gameCurrentSettings = currentSettings;
-	std::cout << "SHAPE " << shape->gameCurrentSettings.randomShape << " : " << currentSettings.randomShape << " GAME\n";
-}
-
-void Game::chrset()
-{
-	std::cout << currentSettings.randomColor << "GAME\n";
-	currentSettings.randomColor = true;
-	std::cout << currentSettings.randomColor << "GAME\n";
+	//std::cout << "SHAPE " << shape->gameCurrentSettings.randomShape << " : " << currentSettings.randomShape << " GAME\n";
 }
 
 void Game::update()
@@ -414,15 +411,13 @@ void Game::draw()
 		drawMenus();
 	}
 	else {
-		for (int i = 0; i < 2000; i++) {
+		
 			shape->chooseShapeAndCustomiseIt();
 
-			std::cout << "PLAY\n";
 
 
 
 			if (currentSettings.randomShape) {
-				std::cout << "RANDOMSHAPE\n";
 				switch (shape->whichShapeToDraw)
 				{
 				case 0:
@@ -437,11 +432,10 @@ void Game::draw()
 				}
 			}
 			else {
-				std::cout << "NONRANDOMSHAPE\n";
+				
 				switch (currentSettings.targetShape)
 				{
 				case 0:
-					std::cout << shape->circle.getRadius() << "\n";
 					window->draw(shape->circle);
 					break;
 				case 1:
@@ -452,7 +446,7 @@ void Game::draw()
 					break;
 				}
 			}
-		}
+		
 	}
 
 	window->display();
