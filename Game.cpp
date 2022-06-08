@@ -197,7 +197,6 @@ void Game::supportSettingsMenu(int button_id)
 		currentSettings.targetColor = sf::Color::Green;
 		return;
 	case 4:
-		
 		currentSettings.randomColor = !currentSettings.randomColor;
 		if (!currentSettings.randomColor)
 			settingsMenuButtons[4].setTexture(&falsemark, false);
@@ -240,9 +239,7 @@ void Game::supportSettingsMenu(int button_id)
 		}
 		return;
 	case 13:
-		gameState = GameState::MainMenu;
-		
-					
+		gameState = GameState::MainMenu;			
 		shareSettings();
 		return;
 	}
@@ -321,7 +318,6 @@ void Game::initiateBackButton()
 
 void Game::pollMenus()
 {
-	
 	// On left mouse press
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
@@ -374,6 +370,18 @@ const bool Game::isRunning()
 	return window->isOpen();
 }
 
+void Game::pollGame() {
+	mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
+	if ((shape->rectangle.getGlobalBounds().contains(mousePos) ||
+		shape->circle.getGlobalBounds().contains(mousePos) ||
+		shape->convex.getGlobalBounds().contains(mousePos))&&
+		sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+	{
+		std::cout << "clicked\n";
+		shape->onClick();
+	}
+}
+
 void Game::shareSettings()
 {
 	shape->gameCurrentSettings = currentSettings;
@@ -397,7 +405,7 @@ void Game::polling()
 		if (gameState != GameState::Play)
 			pollMenus();
 		else {
-			//pollGame();
+			pollGame();
 		}
 
 	}

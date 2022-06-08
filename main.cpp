@@ -6,7 +6,7 @@ int main() {
 	Shape shape;
 	Game game(&shape);
 	
-
+	shape.onClick();
 	while (game.isRunning()) {
 
 		game.update();

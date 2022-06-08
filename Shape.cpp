@@ -124,7 +124,7 @@ void Shape::randomConvex()
 
 void Shape::randomCircle()
 {
-	float length = static_cast<float>(mt() % 50 + 50);
+	float length = static_cast<float>((mt() % 50 + 50)/2);
 	if (gameCurrentSettings.randomColor) {
 		int colorNum = (mt() % 4);
 		switch (colorNum)
@@ -151,7 +151,7 @@ void Shape::randomCircle()
 	}
 	else {
 		length = gameCurrentSettings.targetSize.x;
-		this->circle.setRadius(gameCurrentSettings.targetSize.x);
+		this->circle.setRadius((gameCurrentSettings.targetSize.x)/2);
 	}
 
 	this->circle.setPosition(sf::Vector2f(
@@ -164,10 +164,10 @@ void Shape::onClick()
 	this->isShapeNeeded = true;
 	this->circle.setRadius(0);
 	this->rectangle.setSize(sf::Vector2f(0, 0));
-	this->rectangle.setPosition(sf::Vector2f(-1.f, -1.f));
-	this->circle.setPosition(sf::Vector2f(-1.f, -1.f));
-	this->convex.setPoint(0, sf::Vector2f(0, 0));
-	this->convex.setPoint(1, sf::Vector2f(0, 0));
-	this->convex.setPoint(2, sf::Vector2f(0, 0));
-	this->convex.setPosition(sf::Vector2f(-1.f, -1.f));
+	this->rectangle.setPosition(sf::Vector2f(0, 0));
+	this->circle.setPosition(sf::Vector2f(0, 0));
+	//this->convex.setPoint(0, sf::Vector2f(0, 0));
+	//this->convex.setPoint(1, sf::Vector2f(0, 0));
+	//this->convex.setPoint(2, sf::Vector2f(0, 0));
+	this->convex.setPosition(sf::Vector2f(0, 0));
 }

@@ -38,7 +38,11 @@ private:
 	sf::Text gameModeMenuTexts[3];
 	void initiateGameModeMenu();
 	void supportGameModeMenu(int button_id);
-
+	
+	//Game 
+	sf::Vector2f mousePos;
+	void pollGame();
+	
 	// Settings menu
 	sf::RectangleShape settingsMenuButtons[13];
 	sf::Text settingsMenuTexts[6];
