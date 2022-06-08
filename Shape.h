@@ -3,7 +3,7 @@
 #include<ctime>
 #include<iostream>
 #include <array>
-
+#include <random>
 // Window size
 constexpr int width = 1400, height = 800;
 

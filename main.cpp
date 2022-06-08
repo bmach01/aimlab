@@ -2,7 +2,7 @@
 
 int main() {
 	std::cout << "START\n";
-
+	
 	Shape shape;
 	Game game(&shape);
 	game.chrset();

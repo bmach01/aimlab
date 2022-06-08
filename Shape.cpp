@@ -1,5 +1,5 @@
 #include "Shape.h"
-
+std::mt19937 mt;
 Shape::Shape()
 {
 	//std::cout << gameCurrentSettings.randomSize << "shape struct\n";
@@ -9,11 +9,11 @@ void Shape::chooseShapeAndCustomiseIt()
 {
 	//std::cout << gameCurrentSettings.randomShape << " choosehsape random shape\n";
 	//std::cout << isShapeNeeded << "is shape needed " << "\n";
-	if (isShapeNeeded) {
+	if (true) {
 		//std::cout << "is shape needed " << isShapeNeeded << "\n";
 		isShapeNeeded = false;
 		if (gameCurrentSettings.randomShape) {
-			whichShapeToDraw = rand() % 3;
+			whichShapeToDraw = mt() % 3;
 			//std::cout << "WHICH SHAPE TO DRAW AAAAAA " << whichShapeToDraw << "\n";
 			switch (whichShapeToDraw)
 			{
@@ -52,9 +52,9 @@ void Shape::chooseShapeAndCustomiseIt()
 
 void Shape::randomRectangle()
 {
-	float length = static_cast<float>(rand() % 40 + 11);
+	float length = static_cast<float>(mt()%50+50);
 	if (gameCurrentSettings.randomColor) {
-		int colorNum = (rand() % 4);
+		int colorNum = mt() % 4;
 		switch (colorNum)
 		{
 		case 0:
@@ -81,10 +81,10 @@ void Shape::randomRectangle()
 		length = gameCurrentSettings.targetSize.x;
 		this->rectangle.setSize(gameCurrentSettings.targetSize);
 	}
-
 	this->rectangle.setPosition(sf::Vector2f(
-		static_cast<float>(rand() % static_cast<int>(width - length)),
-		static_cast<float>(rand() % static_cast<int>(height - length))));
+		static_cast<float>(mt() % static_cast<int>(width - length)),
+		static_cast<float>(mt() % static_cast<int>(height - length))));
+	//this->rectangle.setPosition(sf::Vector2f(0,0));
 }
 
 void Shape::randomConvex()
@@ -92,11 +92,11 @@ void Shape::randomConvex()
 
 	convex.setPointCount(3);
 
-	float length = static_cast<float>(rand() % 40 + 11);
+	float length = static_cast<float>(mt() % 50 + 50);
 
 	if (gameCurrentSettings.randomColor) {
 		std::cout << "random kolor" << gameCurrentSettings.randomColor << "\n";
-		int colorNum = (rand() % 4);
+		int colorNum = (mt() % 4);
 		switch (colorNum)
 		{
 		case 0:
@@ -130,8 +130,8 @@ void Shape::randomConvex()
 	}
 
 	this->convex.setPosition(sf::Vector2f(
-		static_cast<float>(rand() % static_cast<int>(width - length)),
-		static_cast<float>(rand() % static_cast<int>(height + ((length / 2) * 1.7f)))));
+		static_cast<float>(mt() % static_cast<int>(width - length)),
+		static_cast<float>(mt() % static_cast<int>(height- ((length / 2) * 1.7f)))+ ((length / 2) * 1.7f)));
 
 
 }
@@ -139,10 +139,10 @@ void Shape::randomConvex()
 void Shape::randomCircle()
 {
 	//std::cout << "JA jebix\n";
-	//float length = static_cast<float>(rand() % 40 + 11);
-	float length = 50.f;
+	float length = static_cast<float>(mt() % 50 + 50);
+	//float length = 50.f;
 	if (gameCurrentSettings.randomColor) {
-		int colorNum = (rand() % 4);
+		int colorNum = (mt() % 4);
 		switch (colorNum)
 		{
 		case 0:
@@ -173,10 +173,10 @@ void Shape::randomCircle()
 		this->circle.setRadius(gameCurrentSettings.targetSize.x);
 	}
 
-
 	this->circle.setPosition(sf::Vector2f(
-		static_cast<float>(rand() % static_cast<int>(width - length)),
-		static_cast<float>(rand() % static_cast<int>(height - length))));
+		static_cast<float>(mt() % static_cast<int>(width - length*2)),
+		static_cast<float>(mt() % static_cast<int>(height - length*2))));
+	//this->circle.setPosition(sf::Vector2f(0,0));
 
 
 }

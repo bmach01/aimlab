@@ -414,11 +414,11 @@ void Game::draw()
 		drawMenus();
 	}
 	else {
-		
-		shape->chooseShapeAndCustomiseIt();
+		for (int i = 0; i < 2000; i++) {
+			shape->chooseShapeAndCustomiseIt();
 
-		std::cout << "PLAY\n";
-		
+			std::cout << "PLAY\n";
+
 
 
 			if (currentSettings.randomShape) {
@@ -452,7 +452,7 @@ void Game::draw()
 					break;
 				}
 			}
-		
+		}
 	}
 
 	window->display();
