@@ -348,6 +348,7 @@ void Game::pollMenus()
 Game::Game(Shape *sh)
 {
 	window = new sf::RenderWindow(sf::VideoMode(width, height), "AimLab", sf::Style::Close);
+
 	window->setFramerateLimit(60);
 	gameState = GameState::MainMenu;
 	shape = sh;
@@ -385,13 +386,13 @@ void Game::pollGame() {
 void Game::shareSettings()
 {
 	shape->gameCurrentSettings = currentSettings;
-	//std::cout << "SHAPE " << shape->gameCurrentSettings.randomShape << " : " << currentSettings.randomShape << " GAME\n";
 }
 
 void Game::update()
 {
 	polling();
-	//useShape();
+	shape.chooseShapeAndCustomiseIt();
+	
 
 }
 
@@ -399,8 +400,11 @@ void Game::polling()
 {
 	while (window->pollEvent(event)) {
 
+
+
 		if (event.type == sf::Event::Closed)
 			window->close();
+
 
 		if (gameState != GameState::Play)
 			pollMenus();
@@ -411,19 +415,18 @@ void Game::polling()
 	}
 }
 
+
+
 void Game::draw()
 {
 	window->clear(sf::Color::Black);
-
+  
 	if (gameState != GameState::Play) {
 		drawMenus();
 	}
 	else {
-		
+
 			shape->chooseShapeAndCustomiseIt();
-
-
-
 
 			if (currentSettings.randomShape) {
 				switch (shape->whichShapeToDraw)
@@ -454,8 +457,6 @@ void Game::draw()
 					break;
 				}
 			}
-		
 	}
-
 	window->display();
 }

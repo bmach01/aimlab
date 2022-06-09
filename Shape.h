@@ -4,46 +4,33 @@
 #include<iostream>
 #include <array>
 #include <random>
-// Window size
-constexpr int width = 1400, height = 800;
-
-// Struct containing global settings
-struct Settings {
-    bool randomColor = false;
-    sf::Color targetColor = sf::Color::Red;
-
-    bool randomSize = false;
-    sf::Vector2f targetSize = sf::Vector2f(50.f, 50.f);
-
-    bool randomShape = false;
-    short int targetShape = 0; // 0 - circle, 1 - square, etc.
-};
-
-enum class GameState { MainMenu, Settings, GameMode, Play };
-
 
 class Shape {
 private:
+  
 public:
-    Shape();
-
-    Settings gameCurrentSettings;
-
-    sf::RectangleShape rectangle;
-    sf::ConvexShape convex;//deletable
-    sf::CircleShape circle;
-
-    //is needed to cordinate customization and drawing
-    short int whichShapeToDraw{};
-    bool isShapeNeeded = true;
-    
-
-    void chooseShapeAndCustomiseIt();
+   // Constructor
+   Shape();
+   
+   // Copy of settings
+   Settings gameCurrentSettings;
  
-    void randomRectangle();
-    void randomConvex();// deletable
-    void randomCircle();
-
-    void update();
-    void onClick();
+   // Figures
+   sf::RectangleShape rectangle;
+   sf::ConvexShape convex;
+   sf::CircleShape circle;
+   
+   // Randomize figures
+   void randomRectangle();
+   void randomConvex();
+   void randomCircle();
+   void chooseShapeAndCustomiseIt();
+  
+   //Is needed to cordinate customization and drawing
+   short int whichShapeToDraw{};
+   bool isShapeNeeded = true;
+    
+   // Functions (?PUBLIC?)
+   void update();
+   void onClick();
 };
