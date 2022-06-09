@@ -1,12 +1,10 @@
-#include "game.h"
+#include "Game.h"
 
 int main() {
-	//init srand
-	std::srand(static_cast<unsigned>(time(NULL)));
-	 
-	Game game;
+
 	Shape shape;
-	
+	Game game(&shape);
+
 	while (game.isRunning()) {
 
 		game.update();
@@ -14,6 +12,5 @@ int main() {
 		game.draw();
 	}
 
-	
 	return 0;
 }

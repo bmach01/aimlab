@@ -94,7 +94,7 @@ void Game::supportGameModeMenu(int button_id)
 {
 	switch (button_id) {
 	case 0:
-		//clasic
+		gameState = GameState::Play;
 		return;
 	case 1:
 		//survival
@@ -180,6 +180,7 @@ void Game::initiateSettingsMenu()
 	settingsMenuButtons[12].setTexture(&falsemark, false);
 
 }
+
 void Game::supportSettingsMenu(int button_id)
 {
 	switch (button_id) {
@@ -238,7 +239,8 @@ void Game::supportSettingsMenu(int button_id)
 		}
 		return;
 	case 13:
-		gameState = GameState::MainMenu;
+		gameState = GameState::MainMenu;			
+		shareSettings();
 		return;
 	}
 }
@@ -334,6 +336,7 @@ void Game::pollMenus()
 					supportGameModeMenu(i);
 					return;
 				case GameState::Settings:
+					
 					supportSettingsMenu(i);
 					return;
 				}
@@ -342,13 +345,15 @@ void Game::pollMenus()
 	}
 }
 
-Game::Game()
+Game::Game(Shape *sh)
 {
 	window = new sf::RenderWindow(sf::VideoMode(width, height), "AimLab", sf::Style::Close);
 
 	window->setFramerateLimit(60);
 	gameState = GameState::MainMenu;
-	
+	shape = sh;
+	shareSettings();
+
 	loadTexturesFonts();
 	initiateBackButton();
 	initiateMainMenu();
@@ -366,10 +371,26 @@ const bool Game::isRunning()
 	return window->isOpen();
 }
 
+void Game::pollGame() {
+	mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
+	if ((shape->rectangle.getGlobalBounds().contains(mousePos) ||
+		shape->circle.getGlobalBounds().contains(mousePos) ||
+		shape->convex.getGlobalBounds().contains(mousePos))&&
+		sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+	{
+		std::cout << "clicked\n";
+		shape->onClick();
+	}
+}
+
+void Game::shareSettings()
+{
+	shape->gameCurrentSettings = currentSettings;
+}
+
 void Game::update()
 {
 	polling();
-
 	shape.chooseShapeAndCustomiseIt();
 	
 
@@ -388,7 +409,7 @@ void Game::polling()
 		if (gameState != GameState::Play)
 			pollMenus();
 		else {
-			//pollGame();
+			pollGame();
 		}
 
 	}
@@ -399,24 +420,43 @@ void Game::polling()
 void Game::draw()
 {
 	window->clear(sf::Color::Black);
-
-
-	switch (shape.whichShapeToDraw)
-	{
-	case 0:
-		window->draw(shape.rectangle);
-		break;
-	case 1:
-		window->draw(shape.circle);
-		break;
-	
-
-	if (gameState != GameState::Play)
+  
+	if (gameState != GameState::Play) {
 		drawMenus();
+	}
 	else {
-		//draw targets and shiet
 
+			shape->chooseShapeAndCustomiseIt();
+
+			if (currentSettings.randomShape) {
+				switch (shape->whichShapeToDraw)
+				{
+				case 0:
+					window->draw(shape->rectangle);
+					break;
+				case 1:
+					window->draw(shape->circle);
+					break;
+				case 2:
+					window->draw(shape->convex);
+					break;
+				}
+			}
+			else {
+				
+				switch (currentSettings.targetShape)
+				{
+				case 0:
+					window->draw(shape->circle);
+					break;
+				case 1:
+					window->draw(shape->rectangle);
+					break;
+				case 2:
+					window->draw(shape->convex);
+					break;
+				}
+			}
 	}
 	window->display();
 }
-

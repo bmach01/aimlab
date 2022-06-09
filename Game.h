@@ -1,9 +1,6 @@
 #pragma once
-
-#include <SFML/Graphics.hpp>
-#include <array>
-#include <iostream>
 #include"Shape.h"
+
 // Window size
 constexpr int width = 1400, height = 800;
 
@@ -21,19 +18,17 @@ struct Settings {
 
 enum class GameState { MainMenu, Settings, GameMode, Play, Exit };
 
-
-
 class Game
 {
 private:
 	// SFML window
-
-	Shape shape;
+	sf::RenderWindow *window;
 	sf::Event event;
-
-	sf::RenderWindow* window;
-	sf::Event event;
-
+  
+  // Private objects
+  Shape* shape;
+	Settings currentSettings;
+  
 	// Font and textures
 	sf::Texture circle;
 	sf::Texture pentagon;
@@ -44,7 +39,6 @@ private:
 
 	// Supporting all menus
 	GameState gameState;
-	Settings currentSettings;
 	sf::RectangleShape backButton;
 	sf::Text backText;
 	std::vector<sf::RectangleShape> getCurrentButtons(); // Return correct set of buttons for current game state
@@ -64,7 +58,11 @@ private:
 	sf::Text gameModeMenuTexts[3];
 	void initiateGameModeMenu();
 	void supportGameModeMenu(int button_id);
-
+	
+	//Game 
+	sf::Vector2f mousePos;
+	void pollGame();
+	
 	// Settings menu
 	sf::RectangleShape settingsMenuButtons[13];
 	sf::Text settingsMenuTexts[6];
@@ -72,20 +70,17 @@ private:
 	void supportSettingsMenu(int button_id);
   
 public:
-	
 	// (De)Constructor
 	Game();
+	Game(Shape *sh);
 	virtual ~Game();
 
 	// Access
 	const bool isRunning();
+	void shareSettings();
 
 	// Public functions
 	void update();
 	void polling();
 	void draw();
-	
-	void returnWindow();
-	
 };
-
