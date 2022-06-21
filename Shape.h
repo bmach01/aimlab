@@ -1,36 +1,42 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include<ctime>
-#include<iostream>
-#include <array>
-#include <random>
+#include "Classic.h"
+#include "Survival.h"
+// Window size
+constexpr int width = 1400, height = 800;
+
+// Struct containing global settings
+struct Settings {
+    bool randomColor = false;
+    sf::Color targetColor = sf::Color::Red;
+
+    bool randomSize = false;
+    sf::Vector2f targetSize = sf::Vector2f(50.f, 50.f);
+
+    bool randomShape = false;
+    short int targetShape = 0; // 0 - circle, 1 - square, etc.
+
+    bool classic = true; // is it classic gamemode (1) or survival (0)
+};
+
+enum class GameState { MainMenu, Settings, GameMode, Play, GameOver };
 
 class Shape {
-private:
-  
 public:
-   // Constructor
-   Shape();
-   
-   // Copy of settings
-   Settings gameCurrentSettings;
- 
-   // Figures
-   sf::RectangleShape rectangle;
-   sf::ConvexShape convex;
-   sf::CircleShape circle;
-   
-   // Randomize figures
-   void randomRectangle();
-   void randomConvex();
-   void randomCircle();
-   void chooseShapeAndCustomiseIt();
-  
-   //Is needed to cordinate customization and drawing
-   short int whichShapeToDraw{};
-   bool isShapeNeeded = true;
+    Settings gameCurrentSettings;
+
+    sf::RectangleShape rectangle;
+    sf::ConvexShape convex;
+    sf::CircleShape circle;
+
+    // for coordination and customization of shapes
+    short int whichShapeToDraw{};
+    bool isShapeNeeded = true;
     
-   // Functions (?PUBLIC?)
-   void update();
-   void onClick();
+
+    void chooseShapeAndCustomiseIt();
+    void randomRectangle();
+    void randomConvex();
+    void randomCircle();
+
+    void onClick();
 };

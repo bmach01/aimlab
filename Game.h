@@ -1,22 +1,5 @@
 #pragma once
-#include"Shape.h"
-
-// Window size
-constexpr int width = 1400, height = 800;
-
-// Struct containing global settings
-struct Settings {
-	bool randomColor = false;
-	sf::Color targetColor = sf::Color::Red;
-
-	bool randomSize = false;
-	sf::Vector2f targetSize = sf::Vector2f(50.f, 50.f);
-
-	bool randomShape = false;
-	short int targetShape = 0; // 0 - circle, 1 - square, etc.
-};
-
-enum class GameState { MainMenu, Settings, GameMode, Play, Exit };
+#include "Shape.h"
 
 class Game
 {
@@ -24,11 +7,9 @@ private:
 	// SFML window
 	sf::RenderWindow *window;
 	sf::Event event;
-  
-  // Private objects
-  Shape* shape;
 	Settings currentSettings;
-  
+	bool clicked = false;
+
 	// Font and textures
 	sf::Texture circle;
 	sf::Texture pentagon;
@@ -59,20 +40,27 @@ private:
 	void initiateGameModeMenu();
 	void supportGameModeMenu(int button_id);
 	
-	//Game 
+	// Game over screens
+	sf::Text gameOverTexts[4];
+	void initiateGameOverMenu();
+
+	// Game 
 	sf::Vector2f mousePos;
 	void pollGame();
-	
+	Shape* shape;
+	Classic* classic;
+	Survival* survival;
+	void saveRecords();
+
 	// Settings menu
 	sf::RectangleShape settingsMenuButtons[13];
 	sf::Text settingsMenuTexts[6];
 	void initiateSettingsMenu();
 	void supportSettingsMenu(int button_id);
-  
+
 public:
 	// (De)Constructor
-	Game();
-	Game(Shape *sh);
+	Game(Shape *sh, Classic *clas, Survival *surv);
 	virtual ~Game();
 
 	// Access

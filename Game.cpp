@@ -94,15 +94,70 @@ void Game::supportGameModeMenu(int button_id)
 {
 	switch (button_id) {
 	case 0:
+		// classic
 		gameState = GameState::Play;
+		currentSettings.classic = true;
+		classic->init();
+		shareSettings();
+
 		return;
 	case 1:
 		//survival
+		gameState = GameState::Play;
+		currentSettings.classic = false;
+		survival->init();
+		shareSettings();
+
 		return;
 	case 2:
 		gameState = GameState::MainMenu;
 		return;
 	}
+}
+
+void Game::initiateGameOverMenu()
+{
+	std::string average_reaction_time, average_accuracy;
+	std::string survived, score;
+
+	gameOverTexts[0].setString("Game Over!");
+	switch (currentSettings.classic) {
+	case 1:
+		// classic
+		average_reaction_time = "Average reaction time: ";
+		average_reaction_time += std::to_string(classic->getTime()); // divided by class gameLength
+		average_reaction_time.resize(28);
+		average_reaction_time += "ms";
+		gameOverTexts[1].setString(average_reaction_time);
+
+		average_accuracy = "Average accuracy: ";
+		average_accuracy += std::to_string(classic->getAccuracy());
+		average_accuracy.resize(23);
+		gameOverTexts[2].setString(average_accuracy);
+		break;
+	case 0:
+		// survival
+		survived = "You have survived for: ";
+		score = std::to_string(survival->points());
+		score += " points and ";
+		score += std::to_string(survival->getTime());
+		score += " seconds. ";
+		//add time
+		gameOverTexts[1].setString(survived);
+		gameOverTexts[2].setString(score);
+
+		break;
+	}
+	gameOverTexts[3].setString("Press ESC to return to main menu");
+
+	for (int i = 0; i < 4; i++) {
+		gameOverTexts[i].setFont(mainFont);
+		gameOverTexts[i].setFillColor(sf::Color::White);
+		gameOverTexts[i].setCharacterSize(60);
+		gameOverTexts[i].setOrigin(gameOverTexts[i].getGlobalBounds().width / 2, gameOverTexts[i].getGlobalBounds().height / 2);
+		gameOverTexts[i].setPosition(width / 2, height / 4 + i * 70.f);
+	}
+
 }
 
 void Game::initiateSettingsMenu()
@@ -345,13 +400,14 @@ void Game::pollMenus()
 	}
 }
 
-Game::Game(Shape *sh)
+Game::Game(Shape *sh, Classic *clas, Survival *surv)
 {
 	window = new sf::RenderWindow(sf::VideoMode(width, height), "AimLab", sf::Style::Close);
-
 	window->setFramerateLimit(60);
 	gameState = GameState::MainMenu;
 	shape = sh;
+	classic = clas;
+	survival = surv;
 	shareSettings();
 
 	loadTexturesFonts();
@@ -373,14 +429,56 @@ const bool Game::isRunning()
 
 void Game::pollGame() {
 	mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
+
+	// Check if mouse is in the window
+	if (mousePos.x < 0 || mousePos.y < 0)
+		return;
+
+	// Check if classic is on
+	if (currentSettings.classic) {
+		if (!classic->stillPlaying()) {
+			gameState = GameState::GameOver;
+			saveRecords();
+			initiateGameOverMenu();
+			draw();
+			return;
+		}
+	}
+	// Get clicks for accuracy
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		classic->pushClick(mousePos, shape->circle);
+
+	// Check if hit the shape
 	if ((shape->rectangle.getGlobalBounds().contains(mousePos) ||
 		shape->circle.getGlobalBounds().contains(mousePos) ||
 		shape->convex.getGlobalBounds().contains(mousePos))&&
 		sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
 	{
-		std::cout << "clicked\n";
+		if (currentSettings.classic)
+			classic->currentLength++;
+		else {
+			survival->clicks++;
+		}
 		shape->onClick();
+		return;
 	}
+	if (!currentSettings.classic) {
+		gameState = GameState::GameOver;
+		initiateGameOverMenu();
+		draw();
+		saveRecords();
+	}
+}
+
+void Game::saveRecords()
+{
+	std::ofstream file;
+	file.open("records.txt", std::ios::app);
+	if (file.is_open()) {
+		file << classic->getAccuracy() << " " << classic->getTime() << "ms\n";
+		
+	}
+	file.close();
 }
 
 void Game::shareSettings()
@@ -391,41 +489,56 @@ void Game::shareSettings()
 void Game::update()
 {
 	polling();
-	shape.chooseShapeAndCustomiseIt();
-	
-
 }
 
 void Game::polling()
 {
+
 	while (window->pollEvent(event)) {
-
-
+		// Block mouse left spamming
+		if ((!sf::Mouse::isButtonPressed(sf::Mouse::Left))&&(!clicked)){
+			clicked = true;
+		}
 
 		if (event.type == sf::Event::Closed)
 			window->close();
 
-
-		if (gameState != GameState::Play)
-			pollMenus();
-		else {
-			pollGame();
+		// Restart game on escape
+		if (event.key.code == sf::Keyboard::Escape) {
+			gameState = GameState::MainMenu;
+			shape->randomCircle();
+			shape->randomConvex();
+			shape->randomRectangle();
 		}
-
+		if ((clicked)&&((sf::Mouse::isButtonPressed(sf::Mouse::Left)))) {
+			clicked = false;
+			if (gameState != GameState::Play)
+				pollMenus();
+			else {
+				pollGame();
+			}
+		}
 	}
 }
-
-
 
 void Game::draw()
 {
 	window->clear(sf::Color::Black);
-  
+
 	if (gameState != GameState::Play) {
+
+		// Gameover screen
+		if (gameState == GameState::GameOver) {
+			for (auto& i : gameOverTexts) {
+				window->draw(i);
+			}
+			window->display();
+			return;
+		}
+
 		drawMenus();
 	}
 	else {
-
 			shape->chooseShapeAndCustomiseIt();
 
 			if (currentSettings.randomShape) {
@@ -443,7 +556,6 @@ void Game::draw()
 				}
 			}
 			else {
-				
 				switch (currentSettings.targetShape)
 				{
 				case 0:
@@ -458,5 +570,6 @@ void Game::draw()
 				}
 			}
 	}
+
 	window->display();
 }
